@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Register</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='auth/fonts/material-icon/css/material-design-iconic-font.min.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='auth/css/style.css') }}"
+    />
+  </head>
+
+  <body>
+    <div class="main">
+      <section class="sign-in">
+        <div class="container">
+          <div class="signin-content">
+            <div class="signin-image">
+              <figure>
+                <img
+                  src="{{ url_for('static', filename='auth/images/Sign up-pana.svg') }}"
+                  alt="sign up image"
+                />
+              </figure>
+              <p>Already have an account? <a href="/login">Log in here!</a></p>
+            </div>
+
+            <div class="signin-form">
+              <h2 class="form-title">Register</h2>
+              <form
+                method="POST"
+                action=""
+                class="register-form"
+                id="login-form"
+              >
+                <div class="form-group">
+                  <label for="name"
+                    ><i class="zmdi zmdi-account-box-mail"></i
+                  ></label>
+                  <input
+                    type="text"
+                    name="name"
+                    id="name"
+                    required
+                    placeholder="Full Name"
+                  />
+                </div>
+                <div class="form-group">
+                  <label for="username"
+                    ><i class="zmdi zmdi-account"></i
+                  ></label>
+                  <input
+                    type="text"
+                    name="username"
+                    id="username"
+                    required
+                    placeholder="Username"
+                  />
+                </div>
+                <div class="form-group">
+                  <label for="password"><i class="zmdi zmdi-lock"></i></label>
+                  <input
+                    type="password"
+                    name="password"
+                    required
+                    id="password"
+                    placeholder="Password"
+                  />
+                </div>
+                <div class="form-group form-button">
+                  <input
+                    type="submit"
+                    name="signup"
+                    id="signup"
+                    class="form-submit"
+                    value="Register"
+                  />
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- JS -->
+    <script src="{{ url_for('static', filename='auth/vendor/jquery/jquery.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='auth/js/main.js') }}"></script>
+  </body>
+  <!-- This template was made by Colorlib (https://colorlib.com) -->
+</html>

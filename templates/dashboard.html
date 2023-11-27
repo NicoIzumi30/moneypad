@@ -1,0 +1,155 @@
+{% include 'layout/base.html' %}
+{% include 'layout/sidebar.html' %}
+
+{% block content %}
+    <!-- Include the sidebar -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!--start content-->
+    <main class="page-content">
+        <div class="row mt-4">
+            <div class="col-md-4">
+                <div class="card text-white bg-warning mb-3">
+                    <div class="card-header bg-warning"></div>
+                    <div class="card-body">
+                      <h5 class="card-title">Total Balance</h5>
+                      <p class="card-text">Rp. 1000,000</p>
+                    </div>
+                  </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card text-white bg-danger mb-3">
+                    <div class="card-header bg-danger"></div>
+                    <div class="card-body">
+                      <h5 class="card-title">Total Income</h5>
+                      <p class="card-text">Rp. 1000,000</p>
+                    </div>
+                  </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card text-white bg-success mb-3">
+                    <div class="card-header bg-success"></div>
+                    <div class="card-body">
+                      <h5 class="card-title">Total Outcome</h5>
+                      <p class="card-text">Rp. 1000,000</p>
+                    </div>
+                  </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <button class="btn btn-info mx-2 disabled" id="dailyButton" onclick="dailyButtonClick()">Daily</button>
+                <button class="btn btn-success mx-2" id="monthlyButton" onclick="monthlyButtonClick()">Monthly</button>
+            </div>
+        </div>
+        <div class="card mt-4">
+            <div class="card-body">
+                <div class="row">
+                    <canvas id="myLineChart" width="600" height="250"></canvas>
+                    <canvas id="myBarChart" class="d-none" width="600" height="250"></canvas>
+                </div>
+            </div>
+        </div>
+    </main>
+    <!--end page main-->
+    <script>
+        var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+        var incomeData = [];
+        var outcomeData = [];
+        for (var i = 0; i < 12; i++) {
+            incomeData.push(Math.floor(Math.random() * (500000000 - 500000 + 1)) + 500000);
+            outcomeData.push(Math.floor(Math.random() * (500000000 - 500000 + 1)) + 500000);
+        }
+        var ctx = document.getElementById('myBarChart').getContext('2d');
+        var myBarChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: months,
+                datasets: [
+                    {
+                        label: 'Income',
+                        data: incomeData,
+                        backgroundColor: 'blue'
+                    },
+                    {
+                        label: 'Outcome',
+                        data: outcomeData,
+                        backgroundColor: 'red'
+                    }
+                ]
+            },
+            options: {
+                scales: {
+                    x: {
+                        beginAtZero: true
+                    },
+                    y: {
+                        beginAtZero: true,
+                        min: 0,
+                        max: 500000000
+                    }
+                }
+            }
+        });
+    </script>
+    <script>
+        var dates = [];
+        for (var i = 1; i <= 30; i++) {
+            dates.push('2023-11-' + (i < 10 ? '0' : '') + i);
+        }
+
+        var incomeData = [];
+        var outcomeData = [];
+        for (var i = 0; i < 30; i++) {
+            incomeData.push(Math.floor(Math.random() * (500000 - 5000 + 1)) + 5000);
+            outcomeData.push(Math.floor(Math.random() * (500000 - 5000 + 1)) + 5000);
+        }
+        var ctx = document.getElementById('myLineChart').getContext('2d');
+        var myLineChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: dates,
+                datasets: [{
+                    label: 'Income',
+                    data: incomeData,
+                    borderColor: 'blue',
+                    fill: false
+                }, {
+                    label: 'Outcome',
+                    data: outcomeData,
+                    borderColor: 'red',
+                    fill: false
+                }]
+            },
+            options: {
+                scales: {
+                    x: {
+                        type: 'category',
+                        labels: dates
+                    },
+                    y: {
+                        beginAtZero: true,
+                        min: 0,
+                        max: 500000
+                    }
+                }
+            }
+        });
+        function dailyButtonClick() {
+            $('#dailyButton').addClass('disabled');
+            $('#monthlyButton').removeClass('disabled');
+
+            $('#myLineChart').removeClass('d-none');
+            $('#myBarChart').addClass('d-none');
+            
+        }
+
+        function monthlyButtonClick() {
+            $('#monthlyButton').addClass('disabled');
+            $('#dailyButton').removeClass('disabled');
+            $('#myBarChart').removeClass('d-none');
+            $('#myLineChart').addClass('d-none');
+        }
+    </script>
+    <!-- Include the footer -->
+    {% include 'layout/footer.html' %}
+{% endblock %}
