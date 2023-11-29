@@ -13,6 +13,25 @@
       rel="stylesheet"
       href="{{ url_for('static', filename='auth/css/style.css') }}"
     />
+      <style>
+        .flashes {
+          list-style-type: none;
+          padding: 0;
+          margin: 0;
+          width: 100%;
+          margin-top: 20px;
+        }
+      
+        .flashes li {
+          padding: 10px;
+          margin-bottom: 10px;
+          border: 1px solid #ccc;
+          background-color: #f8d7da; /* Warna latar merah */
+          color: #721c24; /* Warna teks merah gelap */
+          border-radius: 4px;
+        }
+      </style>
+      
   </head>
 
   <body>
@@ -32,9 +51,18 @@
 
             <div class="signin-form">
               <h2 class="form-title">Login</h2>
+              {% with messages = get_flashed_messages() %}
+              {% if messages %}
+                <ul class="flashes">
+                  {% for message in messages %}
+                    <li>{{ message }}</li>
+                  {% endfor %}
+                </ul>
+              {% endif %}
+            {% endwith %}
               <form
-                method="POST"
-                action=""
+                method="post"
+                action="/login"
                 class="register-form"
                 id="login-form"
               >
