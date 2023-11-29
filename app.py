@@ -80,19 +80,7 @@ def login():
             flash('Username atau password salah', 'danger')
 
     return render_template('login.html')
-    
-    # if request.method == 'POST':
-    #     username = request.form['username']
-    #     password = request.form['password']
 
-    #     if username in users and users[username] == password:
-    #         flash('Login berhasil!', 'success')
-    #         # Di sini Anda dapat melakukan tindakan setelah login, seperti menyimpan sesi pengguna
-    #         return redirect(url_for('index'))
-    #     else:
-    #         flash('Username atau password salah. Silakan coba lagi.', 'danger')
-
-    # return render_template('login.html')
 
 
 if __name__ == '__main__':
