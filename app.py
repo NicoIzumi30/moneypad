@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, redirect, url_for, flash, ses
 from flask_themer import Themer
 from werkzeug.security import generate_password_hash, check_password_hash
 import mysql.connector
+from functools import wraps
 
 app = Flask(__name__)
 themer = Themer(app)
@@ -18,19 +19,37 @@ def get_db():
 
 users = {}
 
+def login_required(func):
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        if "user_id" not in session:
+            return redirect(url_for("login"))
+        return func(*args, **kwargs)
+    return wrapper
+
 @app.route('/')
+@login_required
 def index():
-    return render_template('dashboard.html')
+    conn = get_db()
+    cursor = conn.cursor()
+    user_id = session["user_id"]
+    cursor.execute("SELECT * FROM users WHERE id=%s", (user_id,))
+    user = cursor.fetchone()
+    dict_data = dict(zip([column[0] for column in cursor.description], user))
+    return render_template('dashboard.html', data=dict_data)
 
 @app.route('/income', methods=['GET', 'POST'])
+@login_required
 def income():
     return render_template('income.html')
 
 @app.route('/outcome', methods=['GET', 'POST'])
+@login_required
 def outcome():
     return render_template('outcome.html')
 
 @app.route('/setting', methods=['GET', 'POST'])
+@login_required 
 def setting():
     return render_template('setting.html')
 
@@ -47,7 +66,7 @@ def register():
         cursor = conn.cursor()
 
         try:
-            cursor.execute("INSERT INTO users (name,username, password,saldo) VALUES (%s, %s,%s,%s)", (name,username, hashed_password,0))
+            cursor.execute("INSERT INTO users (name,username,password,saldo) VALUES (%s, %s,%s,%s)", (name,username, hashed_password,0))
             conn.commit()
             flash('Registrasi berhasil!', 'success')
             return redirect(url_for('login'))
@@ -69,18 +88,22 @@ def login():
 
         cursor.execute("SELECT * FROM users WHERE username = %s", (username,))
         user = cursor.fetchone()
-
         conn.close()
 
         if user and check_password_hash(user[3], password):
             session['user_id'] = user[0]
-            flash('Login berhasil!', 'success')
+            # flash('Login berhasil!', 'success')
             return redirect(url_for('index'))
         else:
             flash('Username atau password salah', 'danger')
 
     return render_template('login.html')
 
+@app.route("/logout")
+def logout():
+    session.pop("user_id", None)
+    # flash('Logout berhasil!', 'success')
+    return redirect(url_for("login"))
 
 
 if __name__ == '__main__':
