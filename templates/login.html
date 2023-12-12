@@ -26,9 +26,15 @@
           padding: 10px;
           margin-bottom: 10px;
           border: 1px solid #ccc;
+          border-radius: 4px;
+        }
+        .success{
+          background-color: #39ffaa;
+          color: #000;
+        }
+        .danger{
           background-color: #f8d7da; /* Warna latar merah */
           color: #721c24; /* Warna teks merah gelap */
-          border-radius: 4px;
         }
       </style>
       
@@ -55,7 +61,7 @@
               {% if messages %}
                 <ul class="flashes">
                   {% for message in messages %}
-                    <li>{{ message }}</li>
+                    <li class="success">{{ message }}</li>
                   {% endfor %}
                 </ul>
               {% endif %}

@@ -16,9 +16,45 @@ db_config = {
 }
 def get_db():
     return mysql.connector.connect(**db_config)
+conn = get_db()
 
 users = {}
 
+
+class User:
+    def __init__(self, id, name, username):
+        self.id = id
+        self.name = name
+        self.username = username
+
+class Income:
+    def __init__(self, user_id, nominal, source_type, note, date, id=None):
+        self.user_id = user_id
+        self.nominal = nominal
+        self.source_type = source_type
+        self.note = note
+        self.date = date
+        self.id = id
+
+    def save(self):
+        cursor = conn.cursor()
+        sql = """INSERT INTO income (user_id, nominal, source_type, note, date) VALUES (%s, %s, %s, %s, %s)"""
+        cursor.execute(sql, (self.user_id, self.nominal, self.source_type, self.note, self.date))
+        conn.commit()
+        
+    def update(self):
+        cursor = conn.cursor()
+        sql = """UPDATE income SET user_id=%s, nominal=%s, source_type=%s, note=%s, date=%s WHERE id=%s"""
+        cursor.execute(sql, (self.user_id, self.nominal, self.source_type, self.note, self.date, self.id))
+        conn.commit()
+
+    def delete(self, id):
+        cursor = conn.cursor()
+        sql = """DELETE FROM income WHERE id=%s"""
+        cursor.execute(sql, (id,))
+        conn.commit()
+        cursor.close()
+    
 def login_required(func):
     @wraps(func)
     def wrapper(*args, **kwargs):
@@ -41,6 +77,56 @@ def index():
 @app.route('/income', methods=['GET', 'POST'])
 @login_required
 def income():
+    cursor = conn.cursor(dictionary=True)
+    user_id = session["user_id"]
+    sql = """SELECT * FROM income WHERE user_id=%s"""
+    cursor.execute(sql,(user_id,))
+    income = cursor.fetchall()
+    return render_template('income.html', data = income)
+
+@app.route('/income/create', methods=['GET', 'POST'])
+@login_required
+def create_income():
+    if request.method == "POST":
+        user_id = session["user_id"]
+        nominal = request.form["nominal"]
+        source_type = request.form["source_type"]
+        note = request.form["note"]
+        date = request.form["date"]
+
+        income = Income(user_id=user_id, nominal=nominal, source_type=source_type, note=note, date=date)
+        income.save()
+
+        # flash('Data added successfully', 'success')
+        return redirect(url_for('income'))
+    return render_template('income.html')
+
+@app.route("/income/update", methods=['GET', 'POST'])
+def update_income():
+    if request.method == "POST":
+        user_id = session["user_id"]
+        nominal = request.form["nominal"]
+        source_type = request.form["source_type"]
+        note = request.form["note"]
+        date = request.form["date"]
+        id = request.form["id"]
+
+        income = Income(user_id=user_id, nominal=nominal, source_type=source_type, note=note, date=date, id=id)
+        income.update()
+
+        # flash('Data update successfully', 'success')
+        return redirect(url_for('income'))
+    return render_template('income.html')
+
+@app.route("/income/<income_id>/delete", methods=['GET', 'POST'])
+def delete_income(income_id):
+    print(income_id)   
+    if request.method == 'GET':
+        income = Income(None, None, None, None, None, None)
+        income.delete(income_id)
+        
+        # flash('Data deleted successfully', 'success')
+        return redirect(url_for('income'))
     return render_template('income.html')
 
 @app.route('/outcome', methods=['GET', 'POST'])
@@ -102,7 +188,7 @@ def login():
 @app.route("/logout")
 def logout():
     session.pop("user_id", None)
-    # flash('Logout berhasil!', 'success')
+    flash('Logout berhasil!', 'success')
     return redirect(url_for("login"))
 
 
