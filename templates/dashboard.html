@@ -15,7 +15,7 @@
                       <!-- {% if 'user_id' in session: %}
                         <p>{{ session['user_id']}}</p>
                       {% endif %} -->
-                      <p class="card-text">Rp. {{data.saldo}}
+                      <p class="card-text">Rp. {{'{:,.0f}'.format(data.saldo)}}
                     </div>
                   </div>
             </div>
@@ -24,7 +24,7 @@
                     <div class="card-header bg-danger"></div>
                     <div class="card-body">
                       <h5 class="card-title">Total Income</h5>
-                      <p class="card-text">Rp. 1000,000</p>
+                      <p class="card-text">Rp. {{'{:,.0f}'.format(data.total_income)}}</p>
                     </div>
                   </div>
             </div>
@@ -33,7 +33,7 @@
                     <div class="card-header bg-success"></div>
                     <div class="card-body">
                       <h5 class="card-title">Total Outcome</h5>
-                      <p class="card-text">Rp. 1000,000</p>
+                      <p class="card-text">Rp. {{'{:,.0f}'.format(data.total_outcome)}}</p>
                     </div>
                   </div>
             </div>

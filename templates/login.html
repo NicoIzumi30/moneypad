@@ -57,15 +57,7 @@
 
             <div class="signin-form">
               <h2 class="form-title">Login</h2>
-              {% with messages = get_flashed_messages() %}
-              {% if messages %}
-                <ul class="flashes">
-                  {% for message in messages %}
-                    <li class="success">{{ message }}</li>
-                  {% endfor %}
-                </ul>
-              {% endif %}
-            {% endwith %}
+            
               <form
                 method="post"
                 action="/login"
@@ -113,6 +105,20 @@
     <!-- JS -->
     <script src="{{ url_for('static', filename='auth/vendor/jquery/jquery.min.js') }}"></script>
     <script src="{{ url_for('static', filename='auth/js/main.js') }}"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+
+<script>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            // Display each message using Toastr
+            {% for category, message in messages %}
+                toastr[{{ category|tojson|safe }}]("{{ message }}");
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+</script>
+
   </body>
   <!-- This template was made by Colorlib (https://colorlib.com) -->
 </html>

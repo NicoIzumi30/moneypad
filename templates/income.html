@@ -85,7 +85,7 @@
                             <td>{{loop.index}}</td>
                             <td>{{dt.date}}</td>
                             <td>{{dt.source_type}}</td>
-                            <td>Rp. {{dt.nominal}}</td>
+                            <td>Rp. {{'{:,.0f}'.format(dt.nominal)}}</td>
                             <td>{{dt.note}}</td>
                             <td>
                                 <a href="#" class="text-warning mx-1" data-bs-toggle="modal"

@@ -44,6 +44,21 @@
 <script src="{{ url_for('static', filename='js/pace.min.js') }}"></script>
 <!--app-->
 <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+<!-- Include Toastr CSS and JS -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+
+<script>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            // Display each message using Toastr
+            {% for category, message in messages %}
+                toastr[{{ category|tojson|safe }}]("{{ message }}");
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+</script>
+
 
 
 </body>

@@ -35,7 +35,7 @@
                                             <select class="form-select mb-3" name="used_type" id="used_type"
                                                 aria-label="Default select example">
                                                 <option disabled selected>Chose</option>
-                                                <option value="amkanan">Makanan</option>
+                                                <option value="makanan">Makanan</option>
                                                 <option value="pakaian">Pakaian</option>
                                                 <option value="sosial">Sosial</option>
                                                 <option value="transportasi">Transportasi</option>
@@ -85,7 +85,7 @@
                             <td>{{loop.index}}</td>
                             <td>{{dt.date}}</td>
                             <td>{{dt.used_type}}</td>
-                            <td>Rp. {{dt.nominal}}</td>
+                            <td>Rp. {{'{:,.0f}'.format(dt.nominal)}}</td>
                             <td>{{dt.note}}</td>
                             <td>
                                 <a href="#" class="text-warning mx-1" data-bs-toggle="modal"
