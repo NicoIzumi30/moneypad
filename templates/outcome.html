@@ -2,144 +2,167 @@
 {% include 'layout/sidebar.html' %}
 
 {% block content %}
-    <!-- Include the sidebar -->
+<!-- Include the sidebar -->
 
-    <!--start content-->
-    <main class="page-content">
-        <div class="card mt-4">
-            <div class="card-header">
-                <h5 class="mt-3">Data Outcome</h5>
-                <div class="modal-footer border-0">
-                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addOutcome">Add Outcome</button>
-                    <!-- Modal -->
-                    <div class="modal fade" id="addOutcome" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                        <div class="modal-dialog">
+<!--start content-->
+<main class="page-content">
+    <div class="card mt-4">
+        <div class="card-header">
+            <h5 class="mt-3">Data Outcome</h5>
+            <div class="modal-footer border-0">
+                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addOutcome">Add Outcome</button>
+                <!-- Modal -->
+                <div class="modal fade" id="addOutcome" tabindex="-1" aria-labelledby="exampleModalLabel"
+                    aria-hidden="true">
+                    <div class="modal-dialog">
                         <div class="modal-content">
                             <div class="modal-header">
-                            <h5 class="modal-title" id="exampleModalLabel">Form Add Outcome</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                <h5 class="modal-title" id="exampleModalLabel">Form Add Outcome</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
                             </div>
-                            <div class="modal-body">
-                                <form action="" method="POST">
-                                <div class="row mb-3">
-                                    <label for="nominal" class="col-sm-3 col-form-label">Nominal</label>
-                                    <div class="col-sm-9">
-                                        <input type="number" class="form-control" name="nominal" id="nominal">
+                            <form action="/outcome/create" method="POST">
+                                <div class="modal-body">
+                                    <div class="row mb-3">
+                                        <label for="nominal" class="col-sm-3 col-form-label">Nominal</label>
+                                        <div class="col-sm-9">
+                                            <input type="number" class="form-control" name="nominal" id="nominal">
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="row mb-3">
-                                    <label for="type" class="col-sm-3 col-form-label">Type</label>
-                                    <div class="col-sm-9">
-                                        <select class="form-select mb-3" name="type" id="type" aria-label="Default select example">
-                                            <option disabled selected>Chose</option>
-                                            <option value="Makanan">Makanan</option>
-                                            <option value="Pendidikan">Pendidikan</option>
-                                            <option value="Asuransi">Asuransi</option>
-                                        </select>
+                                    <div class="row mb-3">
+                                        <label for="type" class="col-sm-3 col-form-label">Type</label>
+                                        <div class="col-sm-9">
+                                            <select class="form-select mb-3" name="used_type" id="used_type"
+                                                aria-label="Default select example">
+                                                <option disabled selected>Chose</option>
+                                                <option value="amkanan">Makanan</option>
+                                                <option value="pakaian">Pakaian</option>
+                                                <option value="sosial">Sosial</option>
+                                                <option value="transportasi">Transportasi</option>
+                                            </select>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="row mb-3">
-                                    <label for="noted" class="col-sm-3 col-form-label">Noted</label>
-                                    <div class="col-sm-9">
-                                        <textarea name="noted" class="form-control" id="noted" rows="4"></textarea>
+                                    <div class="row mb-3">
+                                        <label for="noted" class="col-sm-3 col-form-label">Note</label>
+                                        <div class="col-sm-9">
+                                            <textarea name="note" class="form-control" id="note" rows="4"></textarea>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="row mb-4">
-                                    <label for="tanggal" class="col-sm-3 col-form-label">Date</label>
-                                    <div class="col-sm-9">
-                                        <input type="date" class="form-control" id="date" name="date">
+                                    <div class="row mb-4">
+                                        <label for="tanggal" class="col-sm-3 col-form-label">Date</label>
+                                        <div class="col-sm-9">
+                                            <input type="date" class="form-control" id="date" name="date">
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary"
+                                            data-bs-dismiss="modal">Close</button>
+                                        <button type="submit" class="btn btn-primary">Save changes</button>
                                     </div>
                                 </div>
                             </form>
-                            </div>
-                            <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="submit" class="btn btn-primary">Save changes</button>
-                            </div>
-                        </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="card-body">
-                <div class="table-responsive mt-3">
-                    <table class="table align-middle table-bordered text-center">
-                        <thead class="table-dark">
-                            <tr>
-                                <th>No</th>
-                                <th>Date</th>
-                                <th>Jenis</th>
-                                <th>Nominal</th>
-                                <th>Noted</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody id="isitable">
-                            <tr>
-                                <td>1</td>
-                                <td>26/11/2023</td>
-                                <td>Makanan</td>
-                                <td>Rp. 1,000.000</td>
-                                <td>Traktir gacoan</td>
-                                <td>
-                                    <a href="#" class="text-warning mx-1" data-bs-toggle="modal" data-bs-target="#editOutcome"><i class="bi bi-pencil-fill"></i></a>
-                                    <a href="#" class="text-danger mx-1 tombol-hapus" data-bs-toggle="tooltip" data-bs-placement="bottom" title="" data-bs-original-title="Delete" aria-label="Delete"><i class="bi bi-trash-fill"></i></a>
-                                </td>
-                            </tr>
-                            <div class="modal fade" id="editOutcome" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                <div class="modal-dialog">
+        </div>
+        <div class="card-body">
+            <div class="table-responsive mt-3">
+                <table class="table align-middle table-bordered text-center">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>No</th>
+                            <th>Date</th>
+                            <th>Jenis</th>
+                            <th>Nominal</th>
+                            <th>Noted</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="isitable">
+                        {% for dt in data: %}
+                        <tr>
+                            <td>{{loop.index}}</td>
+                            <td>{{dt.date}}</td>
+                            <td>{{dt.used_type}}</td>
+                            <td>Rp. {{dt.nominal}}</td>
+                            <td>{{dt.note}}</td>
+                            <td>
+                                <a href="#" class="text-warning mx-1" data-bs-toggle="modal"
+                                    data-bs-target="#editOutcome{{ dt.id }}"><i class="bi bi-pencil-fill"></i></a>
+                                <a href="{{ url_for('delete_outcome', outcome_id=dt.id) }}"
+                                    class="text-danger mx-1 tombol-hapus" data-bs-toggle="tooltip"
+                                    data-bs-placement="bottom" title="" data-bs-original-title="Delete"
+                                    aria-label="Delete"><i class="bi bi-trash-fill"></i></a>
+                            </td>
+                        </tr>
+                        <div class="modal fade" id="editOutcome{{ dt.id }}" tabindex="-1"
+                            aria-labelledby="editOutcome{{ dt.id }}" aria-hidden="true">
+                            <div class="modal-dialog">
                                 <div class="modal-content">
                                     <div class="modal-header">
-                                    <h5 class="modal-title" id="exampleModalLabel">Form Edit Outcome</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        <h5 class="modal-title" id="editOutcome{{ dt.id }}">Form Edit Outcome</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                            aria-label="Close"></button>
                                     </div>
-                                    <div class="modal-body">
-                                        <form action="" method="POST">
-                                        <div class="row mb-3">
-                                            <label for="nominal" class="col-sm-3 col-form-label">Nominal</label>
-                                            <div class="col-sm-9">
-                                                <input type="number" class="form-control" value="10000" name="nominal" id="nominal">
+                                    <form action="/outcome/update" method="POST">
+                                        <div class="modal-body">
+                                            <input type="hidden" name="id" value="{{ dt.id }}">
+                                            <div class="row mb-3">
+                                                <label for="nominal" class="col-sm-3 col-form-label">Nominal</label>
+                                                <div class="col-sm-9">
+                                                    <input type="number" class="form-control" value="{{ dt.nominal }}"
+                                                        name="nominal" id="nominal">
+                                                </div>
+                                            </div>
+                                            <div class="row mb-3">
+                                                <label for="type" class="col-sm-3 col-form-label">Type</label>
+                                                <div class="col-sm-9">
+                                                    <select class="form-select mb-3" name="used_type" id="used_type"
+                                                        value="{{ dt.used_type }}" id="used_type"
+                                                        aria-label="Default select example">
+                                                        <option value="{{ dt.used_type }}" selected>{{ dt.used_type }}
+                                                        </option>
+                                                        <option value="Makanan">Makanan</option>
+                                                        <option value="Pakaian">Pakaian</option>
+                                                        <option value="Sosial">Sosial</option>
+                                                        <option value="Transportasi">Transportasi</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="row mb-3">
+                                                <label for="noted" class="col-sm-3 col-form-label">Note</label>
+                                                <div class="col-sm-9">
+                                                    <textarea name="note" class="form-control" id="note"
+                                                        rows="4">{{ dt.note }}</textarea>
+                                                </div>
+                                            </div>
+                                            <div class="row mb-4">
+                                                <label for="tanggal" class="col-sm-3 col-form-label">Date</label>
+                                                <div class="col-sm-9">
+                                                    <input type="date" class="form-control" value="{{ dt.date }}"
+                                                        id="date" name="date">
+                                                </div>
                                             </div>
                                         </div>
-                                        <div class="row mb-3">
-                                            <label for="type" class="col-sm-3 col-form-label">Type</label>
-                                            <div class="col-sm-9">
-                                                <select class="form-select mb-3" name="type" id="type" aria-label="Default select example">
-                                                    <option value="Makanan">Makanan</option>
-                                                    <option value="Pendidikan" selected>Pendidikan</option>
-                                                    <option value="Asuransi">Asuransi</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                        <div class="row mb-3">
-                                            <label for="noted" class="col-sm-3 col-form-label">Noted</label>
-                                            <div class="col-sm-9">
-                                                <textarea name="noted" class="form-control" id="noted" rows="4">Buat beli gacoan</textarea>
-                                            </div>
-                                        </div>
-                                        <div class="row mb-4">
-                                            <label for="tanggal" class="col-sm-3 col-form-label">Date</label>
-                                            <div class="col-sm-9">
-                                                <input type="date" class="form-control" id="date" name="date">
-                                            </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary"
+                                                data-bs-dismiss="modal">Close</button>
+                                            <button type="submit" class="btn btn-primary">Save changes</button>
                                         </div>
                                     </form>
-                                    </div>
-                                    <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                    <button type="submit" class="btn btn-primary">Save changes</button>
-                                    </div>
-                                </div>
                                 </div>
                             </div>
-                        </tbody>
-                    </table>
-                </div>
+                        </div>
+                        {% endfor %}
+                    </tbody>
+                </table>
             </div>
         </div>
-    </main>
-    <!--end page main-->
+    </div>
+</main>
+<!--end page main-->
 
-    <!-- Include the footer -->
-    {% include 'layout/footer.html' %}
+<!-- Include the footer -->
+{% include 'layout/footer.html' %}
 {% endblock %}

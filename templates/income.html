@@ -61,10 +61,6 @@
                                 </div>
 
                             </form>
-                            <!-- <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                <button type="submit" class="btn btn-primary">Save changes</button>
-                            </div> -->
                         </div>
                     </div>
                 </div>
@@ -94,7 +90,8 @@
                             <td>
                                 <a href="#" class="text-warning mx-1" data-bs-toggle="modal"
                                     data-bs-target="#editIncome{{ dt.id }}"><i class="bi bi-pencil-fill"></i></a>
-                                <a href="{{ url_for('delete_income', income_id=dt.id) }}" class="text-danger mx-1 tombol-hapus" data-bs-toggle="tooltip"
+                                <a href="{{ url_for('delete_income', income_id=dt.id) }}"
+                                    class="text-danger mx-1 tombol-hapus" data-bs-toggle="tooltip"
                                     data-bs-placement="bottom" title="" data-bs-original-title="Delete"
                                     aria-label="Delete"><i class="bi bi-trash-fill"></i></a>
                             </td>
@@ -124,7 +121,8 @@
                                                     <select class="form-select mb-3" name="source_type"
                                                         value="{{ dt.source_type }}" id="source_type"
                                                         aria-label="Default select example">
-                                                        <option value="{{ dt.source_type }}" selected>{{ dt.source_type }}</option>
+                                                        <option value="{{ dt.source_type }}" selected>{{ dt.source_type
+                                                            }}</option>
                                                         <option value="Uang Saku">Uang Saku</option>
                                                         <option value="Gaji">Gaji</option>
                                                         <option value="Bonus">Bonus</option>
