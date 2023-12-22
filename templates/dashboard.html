@@ -55,13 +55,78 @@
     </main>
     <!--end page main-->
     <script>
+        // var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+        // var ctx = document.getElementById('myBarChart').getContext('2d');
+        // var myBarChart = new Chart(ctx, {
+        //     type: 'bar',
+        //     data: {
+        //         labels: months,
+        //         datasets: [
+        //             {
+        //                 label: 'Income',
+        //                 data: incomeData,
+        //                 backgroundColor: 'blue'
+        //             },
+        //             {
+        //                 label: 'Outcome',
+        //                 data: outcomeData,
+        //                 backgroundColor: 'red'
+        //             }
+        //         ]
+        //     },
+        //     options: {
+        //         scales: {
+        //             x: {
+        //                 beginAtZero: true
+        //             },
+        //             y: {
+        //                 beginAtZero: true,
+        //                 min: 0,
+        //                 max: 500000000
+        //             }
+        //         }
+        //     }
+        // });
+    </script>
+    <script>
+      
+    // Mendapatkan data pendapatan
+    fetch('/query_data_income')
+        .then(response => response.json())
+        .then(incomeData => {
+            // Proses data pendapatan
+            fetch('/query_data_outcome')
+                .then(response => response.json())
+                .then(outcomeData => {
+                    console.log(outcomeData)
+                    // Proses data pengeluaran
+                    processData(incomeData, outcomeData);
+                })
+                .catch(error => console.error('Error fetching outcome data:', error));
+        })
+        .catch(error => console.error('Error fetching income data:', error));
+
+         // Mendapatkan data pendapatan
+    fetch('/query_data_bulan')
+        .then(response => response.json())
+        .then(dataBulan => {
+            // Proses data pendapatan
+            fetch('/query_data_bulan')
+                .then(response => response.json())
+                .then(dataBulan => {
+                    console.log(dataBulan)
+                    // Proses data pengeluaran
+                    processData2(dataBulan);
+                })
+                .catch(error => console.error('Error fetching outcome data:', error));
+        })
+        .catch(error => console.error('Error fetching income data:', error));
+
+        function processData2(dataBulan) {
+        // Ekstrak data dari JSON ke dalam arrays
         var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-        var incomeData = [];
-        var outcomeData = [];
-        for (var i = 0; i < 12; i++) {
-            incomeData.push(Math.floor(Math.random() * (500000000 - 500000 + 1)) + 500000);
-            outcomeData.push(Math.floor(Math.random() * (500000000 - 500000 + 1)) + 500000);
-        }
+        var incomeValues = dataBulan.map(entry => entry.total_income);
+        var outcomeValues = dataBulan.map(entry => entry.total_outcome); // Jika outcome diwakili sebagai nilai negatif
         var ctx = document.getElementById('myBarChart').getContext('2d');
         var myBarChart = new Chart(ctx, {
             type: 'bar',
@@ -70,12 +135,12 @@
                 datasets: [
                     {
                         label: 'Income',
-                        data: incomeData,
+                        data: incomeValues,
                         backgroundColor: 'blue'
                     },
                     {
                         label: 'Outcome',
-                        data: outcomeData,
+                        data: outcomeValues,
                         backgroundColor: 'red'
                     }
                 ]
@@ -88,24 +153,18 @@
                     y: {
                         beginAtZero: true,
                         min: 0,
-                        max: 500000000
                     }
                 }
             }
         });
-    </script>
-    <script>
-        var dates = [];
-        for (var i = 1; i <= 30; i++) {
-            dates.push('2023-11-' + (i < 10 ? '0' : '') + i);
-        }
+    }
+    function processData(incomeData, outcomeData) {
+        // Ekstrak data dari JSON ke dalam arrays
+        var dates = incomeData.map(entry => entry.tanggal);
+        var incomeValues = incomeData.map(entry => entry.total_nominal);
+        var outcomeValues = outcomeData.map(entry => entry.total_nominal); // Jika outcome diwakili sebagai nilai negatif
 
-        var incomeData = [];
-        var outcomeData = [];
-        for (var i = 0; i < 30; i++) {
-            incomeData.push(Math.floor(Math.random() * (500000 - 5000 + 1)) + 5000);
-            outcomeData.push(Math.floor(Math.random() * (500000 - 5000 + 1)) + 5000);
-        }
+        // Buat Chart.js
         var ctx = document.getElementById('myLineChart').getContext('2d');
         var myLineChart = new Chart(ctx, {
             type: 'line',
@@ -113,12 +172,12 @@
                 labels: dates,
                 datasets: [{
                     label: 'Income',
-                    data: incomeData,
+                    data: incomeValues,
                     borderColor: 'blue',
                     fill: false
                 }, {
                     label: 'Outcome',
-                    data: outcomeData,
+                    data: outcomeValues,
                     borderColor: 'red',
                     fill: false
                 }]
@@ -131,12 +190,13 @@
                     },
                     y: {
                         beginAtZero: true,
-                        min: 0,
-                        max: 500000
+                        min: 0
                     }
                 }
             }
         });
+    }
+
         function dailyButtonClick() {
             $('#dailyButton').addClass('disabled');
             $('#monthlyButton').removeClass('disabled');

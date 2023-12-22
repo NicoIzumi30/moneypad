@@ -1,8 +1,9 @@
-from flask import Flask, render_template, request, redirect, url_for, flash, session
+from flask import Flask, render_template, request, redirect, url_for, flash, session,jsonify
 from flask_themer import Themer
 from werkzeug.security import generate_password_hash, check_password_hash
 import mysql.connector
 from functools import wraps
+from datetime import datetime, timedelta
 
 app = Flask(__name__)
 themer = Themer(app)
@@ -213,6 +214,138 @@ def index():
         dict_data = dict(zip([column[0] for column in cursor.description], result))
         return render_template('dashboard.html', data=dict_data)
     
+    
+ 
+@app.route('/query_data_bulan/')
+def query_bulan():
+    try:
+        cursor = conn.cursor()
+        current_year = datetime.now().year
+
+        # Query untuk total pendapatan per bulan pada tahun saat ini
+        income_query = """
+        SELECT
+            DATE_FORMAT(date, '%m-%Y') AS bulan,
+            COALESCE(SUM(nominal), 0) AS total_income
+        FROM
+            income
+        WHERE
+            YEAR(date) = %s
+        GROUP BY
+            bulan;
+        """
+
+        # Query untuk total pengeluaran per bulan pada tahun saat ini
+        outcome_query = """
+        SELECT
+            DATE_FORMAT(date, '%m-%Y') AS bulan,
+            COALESCE(SUM(nominal), 0) AS total_outcome
+        FROM
+            outcome
+        WHERE
+            YEAR(date) = %s
+        GROUP BY
+            bulan;
+        """
+
+        # Eksekusi query untuk pendapatan
+        cursor.execute(income_query, (current_year,))
+        income_data = cursor.fetchall()
+
+        # Eksekusi query untuk pengeluaran
+        cursor.execute(outcome_query, (current_year,))
+        outcome_data = cursor.fetchall()
+
+        # Membuat dictionary untuk setiap bulan dalam tahun saat ini, jika tidak ada data pada bulan tersebut, total diatur ke 0
+        result = [{'bulan': month.strftime('%m-%Y'), 'total_income': 0, 'total_outcome': 0} for month in (datetime(current_year, month, 1) for month in range(1, 13))]
+
+        # Mengisi data yang ada dari hasil query
+        for data in income_data:
+            result_entry = next((entry for entry in result if entry['bulan'] == data[0]), None)
+            if result_entry:
+                result_entry['total_income'] = data[1]
+
+        for data in outcome_data:
+            result_entry = next((entry for entry in result if entry['bulan'] == data[0]), None)
+            if result_entry:
+                result_entry['total_outcome'] = data[1]
+
+        return jsonify(result)
+
+    finally:
+        # Tutup kursor dan koneksi
+        cursor.close()
+
+@app.route('/query_data_income/')
+def query_data():
+    bulan_saat_ini = datetime.now().month
+    tahun_saat_ini = datetime.now().year
+    user_id = session["user_id"]
+    try:
+        cursor = conn.cursor()
+         # Buat rentang tanggal untuk satu bulan
+        start_date = datetime(tahun_saat_ini, bulan_saat_ini, 1)
+        end_date = start_date + timedelta(days=31)  # Menambah 31 hari untuk memastikan rentang mencakup seluruh bulan
+        dates = [start_date + timedelta(days=x) for x in range((end_date - start_date).days + 1)]  # Perubahan di sini
+
+        # Format tanggal ke dalam string
+        formatted_dates = [date.strftime('%Y-%m-%d') for date in dates]
+
+        # Query untuk mendapatkan data pada rentang tanggal
+        query = """SELECT DATE_FORMAT(date, '%Y-%m-%d') AS tanggal, user_id, IFNULL(SUM(nominal), 0) AS total_nominal FROM income WHERE user_id = %s AND DATE(date) BETWEEN %s AND %s GROUP BY DATE_FORMAT(date, '%Y-%m-%d')
+        """
+
+        cursor.execute(query, (user_id,formatted_dates[0], formatted_dates[-1]))
+        results = cursor.fetchall()
+        data = []
+        for date in formatted_dates:
+            data_for_date = next((result for result in results if result[0] == date), None)
+            if data_for_date is not None:
+                data.append({'tanggal': date, 'user_id': data_for_date[1], 'total_nominal': float(data_for_date[2])})
+            else:
+                data.append({'tanggal': date, 'user_id': None, 'total_nominal': 0.0})
+
+        return jsonify(data)
+
+        # return jsonify(results)
+
+    finally:
+        cursor.close()
+@app.route('/query_data_outcome/')
+def query_data_outcome():
+    bulan_saat_ini = datetime.now().month
+    tahun_saat_ini = datetime.now().year
+    user_id = session["user_id"]
+    try:
+        cursor = conn.cursor()
+         # Buat rentang tanggal untuk satu bulan
+        start_date = datetime(tahun_saat_ini, bulan_saat_ini, 1)
+        end_date = start_date + timedelta(days=31)  # Menambah 31 hari untuk memastikan rentang mencakup seluruh bulan
+        dates = [start_date + timedelta(days=x) for x in range((end_date - start_date).days + 1)]  # Perubahan di sini
+
+        # Format tanggal ke dalam string
+        formatted_dates = [date.strftime('%Y-%m-%d') for date in dates]
+
+        # Query untuk mendapatkan data pada rentang tanggal
+        query = """SELECT DATE_FORMAT(date, '%Y-%m-%d') AS tanggal, user_id, IFNULL(SUM(nominal), 0) AS total_nominal FROM outcome WHERE user_id = %s AND DATE(date) BETWEEN %s AND %s GROUP BY DATE_FORMAT(date, '%Y-%m-%d')
+        """
+
+        cursor.execute(query, (user_id,formatted_dates[0], formatted_dates[-1]))
+        results = cursor.fetchall()
+        data = []
+        for date in formatted_dates:
+            data_for_date = next((result for result in results if result[0] == date), None)
+            if data_for_date is not None:
+                data.append({'tanggal': date, 'user_id': data_for_date[1], 'total_nominal': float(data_for_date[2])})
+            else:
+                data.append({'tanggal': date, 'user_id': None, 'total_nominal': 0.0})
+
+        return jsonify(data)
+
+        # return jsonify(results)
+
+    finally:
+        cursor.close()
 
 # INCOME ROUTE
 
